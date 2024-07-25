@@ -1,21 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SourceCodesController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
@@ -31,4 +21,12 @@ Route::group([
     Route::get('/{id}', 'getUser');
     Route::put('/{id}', 'updateUser');
     Route::delete('/{id}', 'deleteUser');
+});
+
+Route::prefix('source-codes')->group(function () {
+    Route::get('/', [SourceCodesController::class, 'getAllSourceCodes']);
+    Route::get('/{id}', [SourceCodesController::class, 'getSourceCode']);
+    Route::post('/', [SourceCodesController::class, 'createSourceCode']);
+    Route::put('/{id}', [SourceCodesController::class, 'updateSourceCode']);
+    Route::delete('/{id}', [SourceCodesController::class, 'deleteSourceCode']);
 });
