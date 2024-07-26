@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\SourceCodesController;
 use App\Http\Controllers\UserController;
@@ -45,3 +46,8 @@ Route::group([
         Route::delete('/{id}', 'deleteMessage');
     }
 );
+Route::middleware('auth:user')->group(function () {
+    Route::get('/chats', [ChatsController::class, 'getChats']);
+    Route::post('/chats', [ChatsController::class, 'createChat']);
+    Route::delete('/chats/{id}', [ChatsController::class, 'deleteChat']);
+});
