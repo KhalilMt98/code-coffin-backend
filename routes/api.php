@@ -23,10 +23,14 @@ Route::group([
     Route::delete('/{id}', 'deleteUser');
 });
 
-Route::prefix('source-codes')->group(function () {
-    Route::get('/', [SourceCodesController::class, 'getAllSourceCodes']);
-    Route::get('/{id}', [SourceCodesController::class, 'getSourceCode']);
-    Route::post('/', [SourceCodesController::class, 'createSourceCode']);
-    Route::put('/{id}', [SourceCodesController::class, 'updateSourceCode']);
-    Route::delete('/{id}', [SourceCodesController::class, 'deleteSourceCode']);
+Route::group([
+    "middleware" => "auth.user",
+    "prefix" => "source-codes",
+    "controller" => SourceCodesController::class
+],function () {
+    Route::get('/','getAllSourceCodes');
+    Route::get('/{id}','getSourceCode');
+    Route::post('/', 'createSourceCode');
+    Route::put('/{id}',  'updateSourceCode');
+    Route::delete('/{id}',  'deleteSourceCode');
 });

@@ -18,7 +18,7 @@ class ChatFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(), // Assumes you have UserFactory
+            'user_id' => User::factory(),
             'participant_id' => User::factory(),
             'created_at' => now(),
             'updated_at' => now(),

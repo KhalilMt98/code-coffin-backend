@@ -36,16 +36,15 @@ class UserController extends Controller
             $validated_data = $req->validate([
                 "name" => "required|string|max:255",
                 "email" => "required|string|email|max:255|unique:users,email," . $user->id,
-                "password" => "nullable|string|min:6|confirmed",
+                "password" => "nullable|string|min:6",
             ]);
 
-            // Prepare data for updating
             $updateData = [
                 "name" => $validated_data["name"],
                 "email" => $validated_data["email"],
             ];
 
-            // Update password if provided
+
             if ($req->filled("password")) {
                 $updateData["password"] = Hash::make($validated_data["password"]);
             }

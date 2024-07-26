@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SourceCode;
+use Auth;
 use Illuminate\Http\Request;
 
 class SourceCodesController extends Controller
@@ -30,10 +31,23 @@ class SourceCodesController extends Controller
 
     public function createSourceCode(Request $req)
     {
+
         $validated_data = $req->validate([
             'title' => 'required|string|max:255',
             'code' => 'required|string',
         ]);
+
+        $user_id = Auth::id();
+
+        if (!$user_id) {
+            return response()->json([
+                "message" => "User not authenticated"
+            ], 401);
+        }
+
+
+        $validated_data['user_id'] = $user_id;
+
 
         $sourceCode = SourceCode::create($validated_data);
 
