@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\SourceCodesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -34,3 +35,13 @@ Route::group([
     Route::put('/{id}',  'updateSourceCode');
     Route::delete('/{id}',  'deleteSourceCode');
 });
+Route::group([
+    "middleware" => "auth.user",
+    "prefix" => "messages",
+    "controller" => MessagesController::class ],function (){
+        Route::get('/',  'getMessages');
+        Route::post('/',  'createMessage');
+        Route::put('/{id}','updateMessage');
+        Route::delete('/{id}', 'deleteMessage');
+    }
+);
