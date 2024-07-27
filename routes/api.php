@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\CoPilotController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\SourceCodesController;
 use App\Http\Controllers\UserController;
@@ -13,6 +14,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
+    Route::get('/verify-token','verifyToken');
 });
 Route::group([
     "middleware" => "auth.user",
@@ -50,4 +52,11 @@ Route::middleware('auth:user')->group(function () {
     Route::get('/chats', [ChatsController::class, 'getChats']);
     Route::post('/chats', [ChatsController::class, 'createChat']);
     Route::delete('/chats/{id}', [ChatsController::class, 'deleteChat']);
+});
+
+Route::post('/suggestion', [CoPilotController::class, 'getSuggestions']);
+Route::get('/test-env', function () {
+    return response()->json([
+        'OPENAI_API_KEY' => env('OPENAI_API_KEY'),
+    ]);
 });

@@ -87,5 +87,12 @@ class AuthController extends Controller
             ]
         ]);
     }
+    public function verifyToken(Request $request)
+    {
+        return response()->json([
+            'status' => 'success',
+            'user' => $request->user()
+        ]);
+    }
 
 }
