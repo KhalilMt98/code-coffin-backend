@@ -31,12 +31,13 @@ Route::group([
     "middleware" => "auth.user",
     "prefix" => "source-codes",
     "controller" => SourceCodesController::class
-],function () {
-    Route::get('/','getAllSourceCodes');
-    Route::get('/{id}','getSourceCode');
+], function () {
+    Route::get('/', 'getAllSourceCodes');
+    Route::get('/user', 'SourceCodeByUserId');
+    Route::get('/{id}', 'getSourceCode');
     Route::post('/', 'createSourceCode');
-    Route::put('/{id}',  'updateSourceCode');
-    Route::delete('/{id}',  'deleteSourceCode');
+    Route::put('/{id}', 'updateSourceCode');
+    Route::delete('/{id}', 'deleteSourceCode');
 });
 Route::group([
     "middleware" => "auth.user",
@@ -55,8 +56,5 @@ Route::middleware('auth:user')->group(function () {
 });
 
 Route::post('/suggestion', [CoPilotController::class, 'getSuggestions']);
-Route::get('/test-env', function () {
-    return response()->json([
-        'OPENAI_API_KEY' => env('OPENAI_API_KEY'),
-    ]);
-});
+
+Route::post('/upload-users', [UserController::class, 'upload']);
