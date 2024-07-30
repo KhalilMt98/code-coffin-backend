@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SourceCode;
 use Auth;
 use Illuminate\Http\Request;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class SourceCodesController extends Controller
 {
@@ -37,7 +38,9 @@ class SourceCodesController extends Controller
             'code' => 'required|string',
         ]);
 
-        $user_id = Auth::id();
+        //Change HERE
+        
+        $user_id = JWTAuth::id();
 
         if (!$user_id) {
             return response()->json([

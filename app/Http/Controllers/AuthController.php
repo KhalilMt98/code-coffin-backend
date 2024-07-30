@@ -1,17 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+// JWTAuth Facade Addition Start
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+// JWTAuth Facade Addition End
+// Removed Auth Facade Start
+// use Illuminate\Support\Facades\Auth;
+// Removed Auth Facade End
 
 class AuthController extends Controller
 {
-
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     public function login(Request $request)
@@ -22,27 +28,46 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
 
-        $token = Auth::attempt($credentials);
-        if (!$token) {
+        // JWTAuth Login Logic Change Start
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
+        } catch (JWTException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+                'message' => 'Could not create token',
+            ], 500);
         }
 
-        $user = Auth::user();
-        return response()->json([
-                'status' => 'success',
-                'user' => $user,
-                'authorisation' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                ]
-            ]);
+        $user = JWTAuth::user();
+        // Removed Auth Login Logic Start
+        // $token = Auth::attempt($credentials);
+        // if (!$token) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Unauthorized',
+        //     ], 401);
+        // }
+        // $user = Auth::user();
+        // Removed Auth Login Logic End
+        // JWTAuth Login Logic Change End
 
+        return response()->json([
+            'status' => 'success',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -55,7 +80,13 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $token = Auth::login($user);
+        // JWTAuth Token Generation Change Start
+        $token = JWTAuth::fromUser($user);
+        // Removed Auth Token Generation Start
+        // $token = Auth::login($user);
+        // Removed Auth Token Generation End
+        // JWTAuth Token Generation Change End
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -69,7 +100,13 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        // JWTAuth Logout Change Start
+        JWTAuth::invalidate(JWTAuth::getToken());
+        // Removed Auth Logout Start
+        // Auth::logout();
+        // Removed Auth Logout End
+        // JWTAuth Logout Change End
+
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
@@ -80,13 +117,14 @@ class AuthController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'user' => Auth::user(),
+            'user' => JWTAuth::user(),
             'authorisation' => [
-                'token' => Auth::refresh(),
+                'token' => JWTAuth::refresh(),
                 'type' => 'bearer',
             ]
         ]);
     }
+
     public function verifyToken(Request $request)
     {
         return response()->json([
@@ -94,5 +132,4 @@ class AuthController extends Controller
             'user' => $request->user()
         ]);
     }
-
 }
