@@ -28,6 +28,21 @@ class SourceCodesController extends Controller
             "source_code" => $sourceCode
         ], 200);
     }
+    public function SourceCodeByUserId(Request $req)
+{
+    $user_id = Auth::id();
+    if (!$user_id) {
+        return response()->json([
+            "message" => "User not authenticated"
+        ], 401); 
+    }
+
+    $sourceCode = SourceCode::where('user_id', $user_id)->get();
+
+    return response()->json([
+        "source_code" => $sourceCode
+    ], 200); 
+}
 
     public function createSourceCode(Request $req)
     {
