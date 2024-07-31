@@ -53,8 +53,8 @@ class SourceCodesController extends Controller
     {
 
         $validated_data = $req->validate([
-            'title' => 'required|string|max:255',
-            'code' => 'required|string',
+            'title' => 'required|string|max:255|unique:source_codes,title',
+             'code' => 'string',
         ]);
 
         $user_id = Auth::id();
