@@ -10,12 +10,17 @@ class SourceCodesController extends Controller
 {
     public function getAllSourceCodes()
     {
-        $sourceCodes = SourceCode::all();
+        // Retrieve the authenticated user's ID
+        $userId = auth()->id();
+    
+        // Fetch only the source codes associated with the authenticated user
+        $sourceCodes = SourceCode::where('user_id', $userId)->get();
+    
         return response()->json([
             "source_codes" => $sourceCodes
         ], 200);
     }
-
+    
     public function getSourceCode($id)
     {
         $sourceCode = SourceCode::find($id);

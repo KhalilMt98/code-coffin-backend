@@ -10,9 +10,11 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sender_id',
-        'receiver_id',
-        'message',
+        'sender_id', 
+        'receiver_id', 
+        'message', 
+        'created_at', 
+        'updated_at'
     ];
 
     public function sender()
@@ -44,6 +46,10 @@ class Message extends Model
                 $chat->save();
             }
         });
+    }
+    public function chat()
+    {
+        return $this->belongsTo(Chat::class);
     }
 }
 

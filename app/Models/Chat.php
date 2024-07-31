@@ -12,8 +12,10 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'user_id', 
         'participant_id',
+        'created_at', 
+        'updated_at'
     ];
 
     public function user()
@@ -24,5 +26,9 @@ class Chat extends Model
     public function participant()
     {
         return $this->belongsTo(User::class, 'participant_id');
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'chat_id', 'id');
     }
 }

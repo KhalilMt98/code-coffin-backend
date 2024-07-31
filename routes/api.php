@@ -49,11 +49,13 @@ Route::group([
         Route::delete('/{id}', 'deleteMessage');
     }
 );
-Route::middleware('auth:user')->group(function () {
-    Route::get('/chats', [ChatsController::class, 'getChats']);
-    Route::post('/chats', [ChatsController::class, 'createChat']);
-    Route::delete('/chats/{id}', [ChatsController::class, 'deleteChat']);
-});
+Route::group([
+    "middleware" => "auth.user",
+    "prefix" => "chats",
+    "controller" => ChatsController::class ],function (){
+        Route::get('/',  'getUserChats');
+    }
+);
 
 Route::post('/suggestion', [CoPilotController::class, 'getSuggestions']);
 
