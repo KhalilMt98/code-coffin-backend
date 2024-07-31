@@ -22,8 +22,8 @@ Route::group([
     "controller" => UserController::class
 ], function () {
     Route::get('/', 'getAllUsers');
-    Route::get('/{id}', 'getUser');
-    Route::put('/{id}', 'updateUser');
+    Route::get('/getUser', 'getUser');
+    Route::put('/', 'updateUser');
     Route::delete('/{id}', 'deleteUser');
 });
 

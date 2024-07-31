@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -18,9 +19,10 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUser($id)
+    public function getUser()
     {
-        $user = User::find($id);
+        $user_id = Auth::id();
+        $user = User::find($user_id);
         if (!$user) {
             return response()->json([
                 "message" => "User not found"
@@ -30,38 +32,38 @@ class UserController extends Controller
             "user" => $user
         ], 200);
     }
-    public function updateUser(Request $req, $id)
-    {
-        $user = User::find($id);
+    public function updateUser(Request $req)
+{
+    $user_id = Auth::id();
+    $user = User::find($user_id);
 
-        if ($user) {
-            $validated_data = $req->validate([
-                "name" => "required|string|max:255",
-                "email" => "required|string|email|max:255|unique:users,email," . $user->id,
-                "password" => "nullable|string|min:6",
-            ]);
+    if ($user) {
+        $validated_data = $req->validate([
+            "name" => "sometimes|string|max:255",
+            "email" => "sometimes|string|email|max:255|unique:users,email," . $user->id,
+            "password" => "nullable|string|min:6",
+        ]);
 
-            $updateData = [
-                "name" => $validated_data["name"],
-                "email" => $validated_data["email"],
-            ];
+        $updateData = [
+            "name" => $validated_data["name"],
+            "email" => $validated_data["email"],
+        ];
 
-
-            if ($req->filled("password")) {
-                $updateData["password"] = Hash::make($validated_data["password"]);
-            }
-
-            $user->update($updateData);
-
-            return response()->json([
-                "message" => "User updated successfully"
-            ], 200);
+        if ($req->filled("password")) {
+            $updateData["password"] = Hash::make($validated_data["password"]);
         }
 
+        $user->update($updateData);
+
         return response()->json([
-            "message" => "User not found"
-        ], 404);
+            "message" => "User updated successfully"
+        ], 200);
     }
+
+    return response()->json([
+        "message" => "User not found"
+    ], 404);
+}
         public function deleteUser($id)
     {
         $user = User::find($id);
@@ -73,6 +75,8 @@ class UserController extends Controller
         $user->delete();
         return response()->json(null, 204);
     }
+
+
     public function upload(Request $request)
 {
     $validator = Validator::make($request->all(), [
