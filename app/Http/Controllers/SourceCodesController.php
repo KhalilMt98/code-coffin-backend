@@ -82,7 +82,7 @@ class SourceCodesController extends Controller
         if ($sourceCode) {
             $validated_data = $req->validate([
                 'title' => 'required|string|max:255',
-                'code' => 'required|string',
+                'code' => 'string',
             ]);
 
             $sourceCode->update($validated_data);
