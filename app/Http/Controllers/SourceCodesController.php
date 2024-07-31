@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\SourceCode;
-use Auth;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class SourceCodesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['getAllSourceCodes', 'getSourceCode']]);
+    }
+
     public function getAllSourceCodes()
     {
         $sourceCodes = SourceCode::all();
@@ -29,43 +33,42 @@ class SourceCodesController extends Controller
             "source_code" => $sourceCode
         ], 200);
     }
-    public function SourceCodeByUserId(Request $req)
-{
-    $user_id = Auth::id();
-    if (!$user_id) {
+
+    public function sourceCodeByUserId(Request $req)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Token invalid or expired'], 401);
+        }
+
+        $sourceCodes = SourceCode::where('user_id', $user->id)->get();
+
         return response()->json([
-            "message" => "User not authenticated"
-        ], 401); 
+            "source_codes" => $sourceCodes
+        ], 200);
     }
-
-    $sourceCode = SourceCode::where('user_id', $user_id)->get();
-
-    return response()->json([
-        "source_code" => $sourceCode
-    ], 200); 
-}
 
     public function createSourceCode(Request $req)
     {
-
         $validated_data = $req->validate([
             'title' => 'required|string|max:255',
             'code' => 'required|string',
         ]);
 
-        //Change HERE
-        
-        $user_id = JWTAuth::id();
-
-        if (!$user_id) {
-            return response()->json([
-                "message" => "User not authenticated"
-            ], 401);
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Token invalid or expired'], 401);
         }
 
-
-        $validated_data['user_id'] = $user_id;
-
+        $validated_data['user_id'] = $user->id;
 
         $sourceCode = SourceCode::create($validated_data);
 
