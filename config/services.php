@@ -32,6 +32,11 @@ return [
     ],
     'openai' => [
         'api_key' => env('OPENAI_API_KEY'),
+        
     ],
+    'elevenLabs'=>[
+        'api_key' => env('ELEVEN_LABS_API_KEY'),
+        'voice_id' => env('ELEVEN_LABS_VOICE_ID'),
+    ]
 
 ];

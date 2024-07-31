@@ -3,8 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\CoPilotController;
+use App\Http\Controllers\ExplainController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\SourceCodesController;
+use App\Http\Controllers\SpeechController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,3 +62,5 @@ Route::group([
 Route::post('/suggestion', [CoPilotController::class, 'getSuggestions']);
 
 Route::post('/upload-users', [UserController::class, 'upload']);
+Route::post('/speech', [SpeechController::class, 'generateSpeech']);
+Route::post('/explanation', [ExplainController::class, 'getExplanation']);
