@@ -20,17 +20,21 @@ class SourceCodesController extends Controller
     }
     
     public function getSourceCode($id)
-    {
-        $sourceCode = SourceCode::find($id);
-        if (!$sourceCode) {
-            return response()->json([
-                "message" => "Source Code not found"
-            ], 404);
-        }
+{
+    $userId = auth()->id();
+    $sourceCode = SourceCode::where('id', $id)->where('user_id', $userId)->first();
+    
+    if (!$sourceCode) {
         return response()->json([
-            "source_code" => $sourceCode
-        ], 200);
+            "message" => "Source Code not found"
+        ], 404);
     }
+    
+    return response()->json([
+        "source_code" => $sourceCode
+    ], 200);
+}
+
     public function SourceCodeByUserId(Request $req)
 {
     $user_id = Auth::id();
