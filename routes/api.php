@@ -40,6 +40,7 @@ Route::group([
     Route::post('/', 'createSourceCode');
     Route::put('/{id}', 'updateSourceCode');
     Route::delete('/{id}', 'deleteSourceCode');
+    Route::get('/getUserProject/{id}','getUserProjects');
 });
 Route::group([
     "middleware" => "auth.user",

@@ -18,6 +18,26 @@ class SourceCodesController extends Controller
             "source_codes" => $sourceCodes
         ], 200);
     }
+public function getUserProjects($userId)
+{
+    try {
+        $sourceCodes = SourceCode::where('user_id', $userId)->get();
+        
+        if ($sourceCodes->isEmpty()) {
+            return response()->json([
+                "message" => "No projects found for this user"
+            ], 404);
+        }
+
+        return response()->json($sourceCodes, 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            "message" => "Internal Server Error",
+            "error" => $e->getMessage()
+        ], 500);
+    }
+}
+
     
     public function getSourceCode($id)
 {
