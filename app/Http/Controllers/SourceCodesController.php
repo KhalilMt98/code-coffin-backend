@@ -81,7 +81,8 @@ class SourceCodesController extends Controller
 
     public function updateSourceCode(Request $req, $id)
     {
-        $sourceCode = SourceCode::find($id);
+        $userId = auth()->id();
+        $sourceCode = SourceCode::where('id', $id)->where('user_id', $userId)->first();
 
         if ($sourceCode) {
             $validated_data = $req->validate([
